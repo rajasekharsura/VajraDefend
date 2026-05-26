@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VajraDefend — Cybersecurity That Strikes First</title>
+  <meta name="description" content="VajraDefend offers elite cybersecurity services — penetration testing, threat intelligence, SOC, and compliance solutions for enterprises across India and globally."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@300;400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg:        #060810;
+      --bg2:       #0b0e18;
+      --bg3:       #0f1420;
+      --border:    rgba(255,255,255,0.06);
+      --accent:    #f0a500;
+      --accent2:   #e05c00;
+      --text:      #e8eaf0;
+      --muted:     #6b7280;
+      --dim:       #9ca3af;
+      --red:       #e53e3e;
+      --glow:      rgba(240,165,0,0.18);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Instrument Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+    /* ── Noise overlay ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      opacity: 0.4;
+    }
+
+    /* ── Typography ── */
+    h1,h2,h3,h4 { font-family: 'Syne', sans-serif; font-weight: 800; letter-spacing: -0.02em; }
+    .mono { font-family: 'IBM Plex Mono', monospace; }
+
+    /* ── Container ── */
+    .wrap { max-width: 1160px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
+
+    /* ══════════════════════════════════════
+       NAV
+    ══════════════════════════════════════ */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 18px 0;
+      border-bottom: 1px solid transparent;
+      transition: background 0.3s, border-color 0.3s, backdrop-filter 0.3s;
+    }
+    nav.scrolled {
+      background: rgba(6,8,16,0.85);
+      backdrop-filter: blur(20px);
+      border-color: var(--border);
+    }
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none; color: var(--text);
+    }
+    .logo-icon {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 14px;
+      color: #000; flex-shrink: 0;
+    }
+    .logo-text { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800; }
+    .logo-text span { color: var(--accent); }
+    .nav-links { display: flex; align-items: center; gap: 36px; }
+    .nav-links a {
+      color: var(--dim); text-decoration: none; font-size: 0.9rem;
+      font-weight: 500; transition: color 0.2s; letter-spacing: 0.01em;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta {
+      padding: 9px 22px;
+      background: var(--accent); color: #000 !important;
+      border-radius: 4px; font-weight: 600 !important;
+      transition: background 0.2s, transform 0.1s !important;
+    }
+    .nav-cta:hover { background: #ffc107 !important; transform: translateY(-1px); }
+
+    /* ══════════════════════════════════════
+       HERO
+    ══════════════════════════════════════ */
+    .hero {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding: 120px 0 80px;
+      position: relative; overflow: hidden;
+    }
+
+    /* Grid lines background */
+    .hero::after {
+      content: '';
+      position: absolute; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 80px 80px;
+      mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 30%, transparent 100%);
+    }
+
+    /* Glow orb */
+    .hero-glow {
+      position: absolute; top: 10%; right: -5%;
+      width: 700px; height: 700px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(240,165,0,0.07) 0%, transparent 70%);
+      pointer-events: none; z-index: 0;
+    }
+
+    .hero-content { position: relative; z-index: 1; max-width: 780px; }
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(240,165,0,0.08); border: 1px solid rgba(240,165,0,0.25);
+      padding: 6px 14px; border-radius: 100px; margin-bottom: 28px;
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem; color: var(--accent);
+      animation: fadeUp 0.6s ease both;
+    }
+    .badge-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent); animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.4); }
+    }
+
+    .hero h1 {
+      font-size: clamp(2.8rem, 6vw, 5.2rem);
+      line-height: 1.08; margin-bottom: 24px;
+      animation: fadeUp 0.6s 0.1s ease both;
+    }
+    .hero h1 em { font-style: normal; color: var(--accent); }
+    .hero h1 .strike {
+      position: relative; color: var(--muted);
+    }
+    .hero h1 .strike::after {
+      content: ''; position: absolute; left: 0; right: 0;
+      top: 55%; height: 2px; background: var(--accent2);
+      transform: scaleX(0); transform-origin: left;
+      animation: strikeIn 0.5s 1s ease forwards;
+    }
+    @keyframes strikeIn { to { transform: scaleX(1); } }
+
+    .hero-sub {
+      font-size: 1.15rem; color: var(--dim); max-width: 560px;
+      line-height: 1.7; margin-bottom: 40px;
+      animation: fadeUp 0.6s 0.2s ease both;
+    }
+
+    .hero-btns {
+      display: flex; gap: 16px; flex-wrap: wrap;
+      animation: fadeUp 0.6s 0.3s ease both;
+    }
+
+    .btn-primary {
+      padding: 14px 32px; background: var(--accent); color: #000;
+      border-radius: 4px; text-decoration: none; font-weight: 700;
+      font-size: 0.95rem; letter-spacing: 0.02em;
+      transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-primary:hover { background: #ffc107; transform: translateY(-2px); box-shadow: 0 8px 30px rgba(240,165,0,0.3); }
+
+    .btn-ghost {
+      padding: 14px 32px; background: transparent; color: var(--text);
+      border: 1px solid var(--border); border-radius: 4px;
+      text-decoration: none; font-weight: 600; font-size: 0.95rem;
+      transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); background: rgba(240,165,0,0.05); }
+
+    /* Stats row */
+    .hero-stats {
+      display: flex; gap: 48px; margin-top: 64px; flex-wrap: wrap;
+      animation: fadeUp 0.6s 0.4s ease both;
+      padding-top: 40px; border-top: 1px solid var(--border);
+    }
+    .stat-item {}
+    .stat-num {
+      font-family: 'Syne', sans-serif; font-size: 2.2rem; font-weight: 800;
+      color: var(--accent); line-height: 1;
+    }
+    .stat-label { font-size: 0.82rem; color: var(--muted); margin-top: 4px; letter-spacing: 0.05em; text-transform: uppercase; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ══════════════════════════════════════
+       TICKER
+    ══════════════════════════════════════ */
+    .ticker {
+      background: var(--bg2); border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 0; overflow: hidden; position: relative; z-index: 1;
+    }
+    .ticker-track {
+      display: flex; gap: 0; white-space: nowrap;
+      animation: ticker 30s linear infinite;
+    }
+    .ticker-track span {
+      display: inline-flex; align-items: center; gap: 24px;
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem;
+      color: var(--muted); padding: 0 40px;
+    }
+    .ticker-track span::before {
+      content: '⬡'; color: var(--accent); font-size: 10px;
+    }
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* ══════════════════════════════════════
+       SECTIONS COMMON
+    ══════════════════════════════════════ */
+    section { padding: 100px 0; position: relative; z-index: 1; }
+
+    .section-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 14px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .section-label::before { content: '//'; opacity: 0.5; }
+
+    .section-title {
+      font-size: clamp(2rem, 4vw, 3rem); line-height: 1.1;
+      margin-bottom: 18px;
+    }
+    .section-sub { color: var(--dim); max-width: 540px; font-size: 1.05rem; line-height: 1.7; }
+
+    /* ══════════════════════════════════════
+       SERVICES
+    ══════════════════════════════════════ */
+    #services { background: var(--bg2); }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1px; background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 8px; overflow: hidden; margin-top: 64px;
+    }
+
+    .service-card {
+      background: var(--bg2); padding: 36px 32px;
+      transition: background 0.3s; cursor: default;
+      position: relative; overflow: hidden;
+    }
+    .service-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.3s;
+    }
+    .service-card:hover { background: var(--bg3); }
+    .service-card:hover::before { transform: scaleX(1); }
+
+    .service-icon {
+      width: 48px; height: 48px; margin-bottom: 20px;
+      background: rgba(240,165,0,0.08); border: 1px solid rgba(240,165,0,0.15);
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+    }
+    .service-card h3 { font-size: 1.1rem; margin-bottom: 10px; font-weight: 700; }
+    .service-card p { color: var(--dim); font-size: 0.9rem; line-height: 1.65; }
+
+    /* ══════════════════════════════════════
+       ABOUT / WHY VAJRA
+    ══════════════════════════════════════ */
+    #about .about-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 80px; align-items: center; margin-top: 64px;
+    }
+
+    .about-visual {
+      position: relative; aspect-ratio: 1;
+      max-width: 460px;
+    }
+    .about-hex {
+      width: 100%; height: 100%;
+      background: var(--bg3);
+      clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+    .about-hex::before {
+      content: '';
+      position: absolute; inset: -1px;
+      background: linear-gradient(135deg, var(--accent), transparent, var(--accent2));
+      clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+      z-index: -1;
+    }
+    .hex-inner {
+      text-align: center; padding: 40px;
+    }
+    .hex-inner .big { font-family: 'Syne', sans-serif; font-size: 5rem; font-weight: 800; color: var(--accent); line-height: 1; }
+    .hex-inner p { color: var(--dim); font-size: 0.9rem; margin-top: 8px; }
+
+    .about-points { display: flex; flex-direction: column; gap: 24px; }
+    .about-point {
+      display: flex; gap: 18px; align-items: flex-start;
+      padding: 20px; background: var(--bg2); border: 1px solid var(--border); border-radius: 8px;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .about-point:hover { border-color: rgba(240,165,0,0.25); background: var(--bg3); }
+    .point-icon {
+      font-size: 1.4rem; flex-shrink: 0;
+      width: 42px; height: 42px; display: flex; align-items: center; justify-content: center;
+      background: rgba(240,165,0,0.08); border-radius: 8px;
+    }
+    .about-point h4 { font-size: 0.97rem; margin-bottom: 4px; }
+    .about-point p { color: var(--dim); font-size: 0.88rem; line-height: 1.6; }
+
+    /* ══════════════════════════════════════
+       PROCESS
+    ══════════════════════════════════════ */
+    #process { background: var(--bg2); }
+
+    .process-steps {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 0; margin-top: 64px; position: relative;
+    }
+    .process-steps::before {
+      content: '';
+      position: absolute; top: 36px; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border) 15%, var(--border) 85%, transparent);
+    }
+    .process-step { padding: 0 24px 0 0; position: relative; }
+    .step-num {
+      width: 72px; height: 72px; border-radius: 50%;
+      background: var(--bg3); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem;
+      color: var(--accent); margin-bottom: 24px;
+      position: relative; z-index: 1;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .process-step:hover .step-num {
+      background: rgba(240,165,0,0.1); border-color: rgba(240,165,0,0.4);
+    }
+    .process-step h3 { font-size: 1rem; margin-bottom: 8px; }
+    .process-step p { color: var(--dim); font-size: 0.87rem; line-height: 1.65; }
+
+    /* ══════════════════════════════════════
+       TESTIMONIAL / TRUST
+    ══════════════════════════════════════ */
+    .trust-bar {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 12px; padding: 48px 56px; margin: 64px 0 0;
+      display: flex; align-items: center; gap: 64px; flex-wrap: wrap;
+    }
+    .trust-quote {
+      flex: 1; min-width: 280px;
+      font-size: 1.25rem; line-height: 1.6; color: var(--text);
+      font-style: italic; position: relative; padding-left: 28px;
+    }
+    .trust-quote::before {
+      content: '"';
+      position: absolute; left: 0; top: -8px;
+      font-size: 3rem; color: var(--accent); line-height: 1;
+      font-family: 'Syne', sans-serif;
+    }
+    .trust-meta { text-align: right; }
+    .trust-meta strong { display: block; font-weight: 700; }
+    .trust-meta span { color: var(--muted); font-size: 0.85rem; }
+
+    /* ══════════════════════════════════════
+       CONTACT
+    ══════════════════════════════════════ */
+    #contact { background: var(--bg2); }
+
+    .contact-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 80px; margin-top: 64px; align-items: start;
+    }
+    .contact-info { display: flex; flex-direction: column; gap: 28px; }
+    .contact-item {
+      display: flex; gap: 16px; align-items: flex-start;
+    }
+    .contact-item-icon {
+      width: 44px; height: 44px; flex-shrink: 0;
+      background: rgba(240,165,0,0.08); border: 1px solid rgba(240,165,0,0.2);
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+    .contact-item h4 { font-size: 0.88rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+    .contact-item p { font-size: 0.97rem; }
+    .contact-item a { color: var(--accent); text-decoration: none; }
+
+    .contact-form { display: flex; flex-direction: column; gap: 18px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+
+    .form-group { display: flex; flex-direction: column; gap: 8px; }
+    .form-group label {
+      font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--muted); font-family: 'IBM Plex Mono', monospace;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      background: var(--bg3); border: 1px solid var(--border);
+      color: var(--text); padding: 12px 16px; border-radius: 6px;
+      font-family: 'Instrument Sans', sans-serif; font-size: 0.95rem;
+      transition: border-color 0.2s, background 0.2s; outline: none;
+      -webkit-appearance: none;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--accent); background: rgba(240,165,0,0.03);
+    }
+    .form-group textarea { height: 110px; resize: vertical; }
+    .form-group select option { background: var(--bg3); }
+
+    .form-submit {
+      padding: 14px 36px; background: var(--accent); color: #000;
+      border: none; border-radius: 6px; font-weight: 700; font-size: 0.97rem;
+      cursor: pointer; letter-spacing: 0.03em; transition: all 0.2s;
+      font-family: 'Instrument Sans', sans-serif; align-self: flex-start;
+    }
+    .form-submit:hover { background: #ffc107; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(240,165,0,0.3); }
+
+    /* ══════════════════════════════════════
+       FOOTER
+    ══════════════════════════════════════ */
+    footer {
+      background: var(--bg); border-top: 1px solid var(--border);
+      padding: 60px 0 32px; position: relative; z-index: 1;
+    }
+    .footer-top {
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 64px; padding-bottom: 48px; border-bottom: 1px solid var(--border);
+    }
+    .footer-brand p { color: var(--muted); font-size: 0.9rem; line-height: 1.7; margin: 16px 0 24px; max-width: 300px; }
+    .footer-col h5 {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+      margin-bottom: 20px;
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .footer-col ul a { color: var(--dim); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+    .footer-col ul a:hover { color: var(--accent); }
+
+    .footer-bottom {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-top: 28px; flex-wrap: wrap; gap: 12px;
+    }
+    .footer-bottom p { color: var(--muted); font-size: 0.82rem; }
+    .footer-bottom .mono { color: var(--muted); font-size: 0.75rem; }
+
+    .social-links { display: flex; gap: 12px; }
+    .social-link {
+      width: 36px; height: 36px; border: 1px solid var(--border); border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--muted); text-decoration: none; font-size: 14px;
+      transition: all 0.2s;
+    }
+    .social-link:hover { border-color: var(--accent); color: var(--accent); background: rgba(240,165,0,0.05); }
+
+    /* ══════════════════════════════════════
+       ALERT BANNER
+    ══════════════════════════════════════ */
+    .alert-bar {
+      background: rgba(240,165,0,0.08); border-bottom: 1px solid rgba(240,165,0,0.2);
+      padding: 10px 0; text-align: center; position: relative; z-index: 99;
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; color: var(--accent);
+    }
+    .alert-bar a { color: var(--accent); text-decoration: underline; cursor: pointer; }
+
+    /* ══════════════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════════════ */
+    @media (max-width: 900px) {
+      #about .about-grid { grid-template-columns: 1fr; }
+      .contact-grid { grid-template-columns: 1fr; gap: 48px; }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 40px; }
+      .form-row { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+    }
+    @media (max-width: 600px) {
+      .wrap { padding: 0 20px; }
+      .hero-stats { gap: 28px; }
+      .trust-bar { padding: 32px 28px; gap: 28px; }
+      .footer-top { grid-template-columns: 1fr; }
+      .process-steps { grid-template-columns: 1fr; }
+      .process-steps::before { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Alert bar -->
+<div class="alert-bar">
+  🛡️ New: VajraDefend Red Team Assessment 2025 — <a onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Request a free scoping call →</a>
+</div>
+
+<!-- ── NAV ── -->
+<nav id="mainNav">
+  <div class="wrap nav-inner">
+    <a class="logo" href="#">
+      <div class="logo-icon">V</div>
+      <span class="logo-text">Vajra<span>Defend</span></span>
+    </a>
+    <div class="nav-links">
+      <a href="#services">Services</a>
+      <a href="#about">About</a>
+      <a href="#process">Process</a>
+      <a href="#contact">Contact</a>
+      <a href="#contact" class="nav-cta">Get Protected</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="wrap">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <div class="badge-dot"></div>
+        Trusted Cybersecurity Partner — India &amp; Global
+      </div>
+      <h1>
+        Defense Built to<br>
+        <em>Strike Before</em><br>
+        <span class="strike">the Breach</span>
+      </h1>
+      <p class="hero-sub">
+        VajraDefend delivers elite offensive security, 24/7 threat monitoring, and compliance-grade hardening — so attackers never get the upper hand on your business.
+      </p>
+      <div class="hero-btns">
+        <a href="#contact" class="btn-primary">
+          Request Assessment
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M3 8h8.586l-2.293-2.293 1.414-1.414L14.414 8l-3.707 3.707-1.414-1.414L11.586 9H3V8z"/></svg>
+        </a>
+        <a href="#services" class="btn-ghost">Explore Services</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <div class="stat-num">300+</div>
+          <div class="stat-label">Audits Completed</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">99.8%</div>
+          <div class="stat-label">Threat Detection</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">72h</div>
+          <div class="stat-label">Mean Response Time</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">ISO27001</div>
+          <div class="stat-label">Certified Team</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── TICKER ── -->
+<div class="ticker">
+  <div class="ticker-track">
+    <span>Penetration Testing</span>
+    <span>Red Team Operations</span>
+    <span>SOC as a Service</span>
+    <span>Cloud Security</span>
+    <span>Zero Trust Architecture</span>
+    <span>Vulnerability Assessment</span>
+    <span>VAPT</span>
+    <span>Incident Response</span>
+    <span>Threat Intelligence</span>
+    <span>SIEM / SOAR</span>
+    <span>Compliance — ISO 27001</span>
+    <span>DPDP Act Compliance</span>
+    <span>Penetration Testing</span>
+    <span>Red Team Operations</span>
+    <span>SOC as a Service</span>
+    <span>Cloud Security</span>
+    <span>Zero Trust Architecture</span>
+    <span>Vulnerability Assessment</span>
+    <span>VAPT</span>
+    <span>Incident Response</span>
+    <span>Threat Intelligence</span>
+    <span>SIEM / SOAR</span>
+    <span>Compliance — ISO 27001</span>
+    <span>DPDP Act Compliance</span>
+  </div>
+</div>
+
+<!-- ── SERVICES ── -->
+<section id="services">
+  <div class="wrap">
+    <div class="section-label">What We Do</div>
+    <h2 class="section-title">Full-Spectrum Security Services</h2>
+    <p class="section-sub">From initial assessment to round-the-clock monitoring — we cover every layer of your attack surface.</p>
+
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-icon">🎯</div>
+        <h3>Penetration Testing & VAPT</h3>
+        <p>Manual and automated pen testing for web apps, APIs, mobile, network, and cloud environments. OWASP Top 10 and beyond.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🔴</div>
+        <h3>Red Team Operations</h3>
+        <p>Full-scope adversarial simulations mimicking APT groups. Test your people, processes, and technology under real-world conditions.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🛡️</div>
+        <h3>SOC as a Service</h3>
+        <p>24/7 Security Operations Centre with SIEM, SOAR, and expert analysts. Real-time threat detection and immediate incident escalation.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">☁️</div>
+        <h3>Cloud Security</h3>
+        <p>AWS, Azure, and GCP security posture management. Misconfiguration detection, IAM auditing, and cloud-native threat protection.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🔍</div>
+        <h3>Threat Intelligence</h3>
+        <p>Dark web monitoring, IOC feeds, and adversary tracking. Know what attackers know about your organisation before they act.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">📋</div>
+        <h3>Compliance & Audit</h3>
+        <p>ISO 27001, SOC 2, PCI-DSS, DPDP Act, and RBI cybersecurity framework. Gap assessments to full certification support.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── ABOUT ── -->
+<section id="about">
+  <div class="wrap">
+    <div class="section-label">Why VajraDefend</div>
+    <h2 class="section-title">Built by Defenders,<br>Tested by Attackers</h2>
+
+    <div class="about-grid">
+      <div class="about-visual">
+        <div class="about-hex">
+          <div class="hex-inner">
+            <div class="big">V</div>
+            <p>Vajra — the indestructible weapon of the gods. Our shield for your business.</p>
+          </div>
+        </div>
+      </div>
+      <div class="about-points">
+        <div class="about-point">
+          <div class="point-icon">⚡</div>
+          <div>
+            <h4>Offensive-first Mindset</h4>
+            <p>Our team includes former red teamers, bug bounty researchers, and CTF champions who think like attackers to defend like experts.</p>
+          </div>
+        </div>
+        <div class="about-point">
+          <div class="point-icon">🇮🇳</div>
+          <div>
+            <h4>India-Focused, Globally Capable</h4>
+            <p>Deep understanding of India's regulatory landscape — DPDP Act, RBI, SEBI, CERT-In — with global delivery standards.</p>
+          </div>
+        </div>
+        <div class="about-point">
+          <div class="point-icon">🔬</div>
+          <div>
+            <h4>Research-Driven Intelligence</h4>
+            <p>We don't just use tools — we build them. Our proprietary threat intel platform tracks 500+ threat actor groups in real time.</p>
+          </div>
+        </div>
+        <div class="about-point">
+          <div class="point-icon">📞</div>
+          <div>
+            <h4>Human-First Support</h4>
+            <p>No ticket queues. A dedicated security engineer answers your calls, understands your business, and acts fast.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="trust-bar">
+      <p class="trust-quote">VajraDefend found 14 critical vulnerabilities in our payment gateway that three other firms had missed. Their thoroughness is unmatched.</p>
+      <div class="trust-meta">
+        <strong>Priya Menon</strong>
+        <span>CISO, FinTech Startup · Bengaluru</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PROCESS ── -->
+<section id="process">
+  <div class="wrap">
+    <div class="section-label">How It Works</div>
+    <h2 class="section-title">From Scoping to<br>Secured in 4 Steps</h2>
+    <p class="section-sub">A transparent, systematic process that keeps you informed at every stage.</p>
+    <div class="process-steps">
+      <div class="process-step">
+        <div class="step-num">01</div>
+        <h3>Discovery & Scoping</h3>
+        <p>We map your entire attack surface — assets, environments, third-party integrations — and agree on objectives and rules of engagement.</p>
+      </div>
+      <div class="process-step">
+        <div class="step-num">02</div>
+        <h3>Attack Simulation</h3>
+        <p>Our team executes real-world attack scenarios using the latest TTPs (MITRE ATT&amp;CK framework) across all agreed targets.</p>
+      </div>
+      <div class="process-step">
+        <div class="step-num">03</div>
+        <h3>Findings & Report</h3>
+        <p>Detailed technical and executive reports with CVSS-scored vulnerabilities, proof-of-concept screenshots, and remediation priorities.</p>
+      </div>
+      <div class="process-step">
+        <div class="step-num">04</div>
+        <h3>Remediation & Retest</h3>
+        <p>We work alongside your team to close gaps, then verify every fix with a complimentary retest — no extra charge.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTACT ── -->
+<section id="contact">
+  <div class="wrap">
+    <div class="section-label">Get Started</div>
+    <h2 class="section-title">Start Your Security Assessment</h2>
+    <p class="section-sub">Tell us about your environment and a security engineer will reach out within one business day.</p>
+
+    <div class="contact-grid">
+      <div class="contact-info">
+        <div class="contact-item">
+          <div class="contact-item-icon">📧</div>
+          <div>
+            <h4>Email</h4>
+            <p><a href="mailto:info@vajradefend.com">info@vajradefend.com</a></p>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-item-icon">📱</div>
+          <div>
+            <h4>Phone / WhatsApp</h4>
+            <p>+91 98765 43210</p>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-item-icon">📍</div>
+          <div>
+            <h4>Headquarters</h4>
+            <p>Hyderabad, Telangana, India</p>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-item-icon">⏱️</div>
+          <div>
+            <h4>Response SLA</h4>
+            <p>Within 24 business hours</p>
+          </div>
+        </div>
+      </div>
+
+      <form class="contact-form" action="contact.php" method="POST">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" name="name" placeholder="Rajasekhar" required/>
+          </div>
+          <div class="form-group">
+            <label>Company</label>
+            <input type="text" name="company" placeholder="Acme Corp"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" name="email" placeholder="you@company.com" required/>
+          </div>
+          <div class="form-group">
+            <label>Phone</label>
+            <input type="tel" name="phone" placeholder="+91 98765 00000"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Service Interested In</label>
+          <select name="service">
+            <option value="">Select a service...</option>
+            <option>Penetration Testing / VAPT</option>
+            <option>Red Team Assessment</option>
+            <option>SOC as a Service</option>
+            <option>Cloud Security Review</option>
+            <option>Compliance & Audit</option>
+            <option>Incident Response</option>
+            <option>Other / Not Sure</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Tell Us About Your Environment</label>
+          <textarea name="message" placeholder="Briefly describe your infrastructure, team size, and what you'd like assessed..."></textarea>
+        </div>
+        <button type="submit" class="form-submit">Send Request →</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a class="logo" href="#">
+          <div class="logo-icon">V</div>
+          <span class="logo-text">Vajra<span>Defend</span></span>
+        </a>
+        <p>Elite cybersecurity services for enterprises, fintechs, and startups across India and beyond. We defend what matters most.</p>
+        <div class="social-links">
+          <a class="social-link" href="#" title="LinkedIn">in</a>
+          <a class="social-link" href="#" title="Twitter">𝕏</a>
+          <a class="social-link" href="#" title="GitHub">⌥</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h5>Services</h5>
+        <ul>
+          <li><a href="#services">Pen Testing</a></li>
+          <li><a href="#services">Red Team</a></li>
+          <li><a href="#services">SOC-as-a-Service</a></li>
+          <li><a href="#services">Cloud Security</a></li>
+          <li><a href="#services">Compliance</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Company</h5>
+        <ul>
+          <li><a href="#about">About</a></li>
+          <li><a href="#process">Our Process</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Responsible Disclosure</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Legal</h5>
+        <ul>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Cookie Policy</a></li>
+          <li><a href="#">DPDP Compliance</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 VajraDefend Cybersecurity Pvt. Ltd. All rights reserved.</p>
+      <span class="mono">CIN: U72900TG2025PTC000000 · Hyderabad</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Sticky nav
+  const nav = document.getElementById('mainNav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  // Smooth scroll for all anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+    });
+  });
+
+  // Scroll-reveal
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.service-card, .about-point, .process-step, .contact-item').forEach(el => {
+    el.style.cssText += 'opacity:0; transform:translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease;';
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>
