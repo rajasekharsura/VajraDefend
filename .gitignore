@@ -1,0 +1,7 @@
+*.log
+*.bak
+*.env
+setup.sh
+torrc_append.conf
+vajradefend_leads.log
+.htpasswd
