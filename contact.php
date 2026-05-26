@@ -2,7 +2,7 @@
 // contact.php — VajraDefend contact form handler
 
 // ── Config ────────────────────────────────
-define('NOTIFY_EMAIL', 'surarajasekhar@proton.me');   // Change to your real email
+define('NOTIFY_EMAIL', 'info@vajradefend.com');   // Change to your real email
 define('LOG_FILE',     '/var/log/vajradefend_leads.log');
 define('SITE_NAME',    'VajraDefend');
 
@@ -78,7 +78,7 @@ LOG;
 // ── Send email notification ────────────────
 $subject  = "[VajraDefend Lead] {$name} — {$service}";
 $body     = "New contact form submission from {$name} ({$email})\n\n{$log_entry}";
-$headers  = "From: surarajasekhar@proton.me\r\nReply-To: {$email}\r\nX-Mailer: PHP/".phpversion();
+$headers  = "From: noreply@vajradefend.com\r\nReply-To: {$email}\r\nX-Mailer: PHP/".phpversion();
 
 @mail(NOTIFY_EMAIL, $subject, $body, $headers);
 
