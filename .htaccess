@@ -39,3 +39,7 @@ RewriteBase /
     php_flag session.cookie_httponly On
     php_flag session.cookie_secure   On
 </IfModule>
+<<<<<<< HEAD
+=======
+EOF
+>>>>>>> 4db21bc970d6db17ee22645c3c244f04a710cdc0
