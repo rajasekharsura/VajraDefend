@@ -1,45 +1,41 @@
-# /var/www/html/.htaccess
-
 Options -Indexes
 RewriteEngine On
+RewriteBase /
 
-# ── Security headers ─────────────────────────────
+# ── Security Headers ─────────────────────
 <IfModule mod_headers.c>
     Header always set X-Content-Type-Options    "nosniff"
     Header always set X-Frame-Options           "SAMEORIGIN"
     Header always set X-XSS-Protection          "1; mode=block"
     Header always set Referrer-Policy           "strict-origin-when-cross-origin"
     Header always set Permissions-Policy        "geolocation=(), microphone=(), camera=()"
-    # Uncomment after HTTPS is active:
-    # Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
 </IfModule>
 
-# ── Block access to sensitive files ──────────────
+# ── Block Sensitive Files ─────────────────
 <FilesMatch "\.(log|env|git|sh|bak|sql|json|lock)$">
     Require all denied
 </FilesMatch>
 
-# ── PHP settings ──────────────────────────────────
-<IfModule mod_php.c>
-    php_flag display_errors Off
-    php_value upload_max_filesize 10M
-    php_value post_max_size 10M
-    php_flag session.cookie_httponly On
-    php_flag session.cookie_secure   Off  # set On after HTTPS
-</IfModule>
-
-# ── Cache static assets ───────────────────────────
+# ── Cache Static Assets ───────────────────
 <IfModule mod_expires.c>
     ExpiresActive On
-    ExpiresByType text/css             "access plus 1 month"
+    ExpiresByType text/css               "access plus 1 month"
     ExpiresByType application/javascript "access plus 1 month"
-    ExpiresByType image/png            "access plus 6 months"
-    ExpiresByType image/jpg            "access plus 6 months"
-    ExpiresByType image/webp           "access plus 6 months"
-    ExpiresByType image/svg+xml        "access plus 1 month"
+    ExpiresByType image/png              "access plus 6 months"
+    ExpiresByType image/jpeg             "access plus 6 months"
+    ExpiresByType image/webp             "access plus 6 months"
+    ExpiresByType image/svg+xml          "access plus 1 month"
 </IfModule>
 
-# ── Gzip compression ──────────────────────────────
+# ── Gzip Compression ──────────────────────
 <IfModule mod_deflate.c>
     AddOutputFilterByType DEFLATE text/html text/css application/javascript text/plain
+</IfModule>
+
+# ── PHP Settings ──────────────────────────
+<IfModule mod_php.c>
+    php_flag display_errors Off
+    php_flag session.cookie_httponly On
+    php_flag session.cookie_secure   On
 </IfModule>
