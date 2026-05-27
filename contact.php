@@ -2,7 +2,7 @@
 // contact.php — VajraDefend contact form handler
 
 // ── Config ────────────────────────────────
-define('NOTIFY_EMAIL', 'info@vajradefend.com');   // Change to your real email
+define('NOTIFY_EMAIL', 'surarajasekhar@proton.me');   // Change to your real email
 define('LOG_FILE',     '/var/log/vajradefend_leads.log');
 define('SITE_NAME',    'VajraDefend');
 
